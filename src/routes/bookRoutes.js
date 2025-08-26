@@ -23,7 +23,7 @@ router.post('/',protectedRoute,async (req,res)=>{
 
         // console.log("imageUrl", imageUrl);
 
-        const newBook = await new Book({
+        const newBook = new Book({
             title,
             caption,
             rating,
@@ -32,9 +32,7 @@ router.post('/',protectedRoute,async (req,res)=>{
         });
 
         await newBook.save();
-        res.status(200).json(newBook);
-
-        res.send({message:"Book Added"});
+        res.status(201).json(newBook);
 
     }catch(error){
         console.log("Error creating book", error);
