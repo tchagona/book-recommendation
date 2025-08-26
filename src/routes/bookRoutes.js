@@ -1,11 +1,12 @@
 import express from "express";
 import cloudinary from "../lib/cloudinary.js";
 import Book from "../models/Book.js";
-import protectRoute from "../middleware/route.middleware.js";
+;
+import protectedRoute from "../middleware/route.middleware.js";
 
 const router = express.Router();
 
-router.post("/", protectRoute, async (req, res) => {
+router.post("/", protectedRoute, async (req, res) => {
     try {
         const { title, caption, rating, image } = req.body;
 
@@ -39,7 +40,7 @@ router.post("/", protectRoute, async (req, res) => {
 
 
 // pagination => infinite loading
-router.get("/", protectRoute, async (req, res) => {
+router.get("/", protectedRoute, async (req, res) => {
     // example call from react native - frontend
     // const response = await fetch("http://localhost:3000/api/books?page=1&limit=5");
     try {
@@ -68,7 +69,7 @@ router.get("/", protectRoute, async (req, res) => {
 });
 
 // get recommended books by the logged in user
-router.get("/user", protectRoute, async (req, res) => {
+router.get("/user", protectedRoute, async (req, res) => {
     try {
         const books = await Book.find({ user: req.user._id }).sort({ createdAt: -1 });
         res.json(books);
@@ -78,7 +79,7 @@ router.get("/user", protectRoute, async (req, res) => {
     }
 });
 
-router.delete("/:id", protectRoute, async (req, res) => {
+router.delete("/:id", protectedRoute, async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
         if (!book) return res.status(404).json({ message: "Book not found" });
