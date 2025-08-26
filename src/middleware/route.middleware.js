@@ -20,7 +20,7 @@ const protectRoute = async (req,res,next)=>{
         req.user = user;
         next();
     }catch(errors){
-        console.error("Authentication error:", error.message);
+        console.error("Authentication error:", errors.message);
         res.status(401).json({ message: "Token is not valid" });
     }
 
