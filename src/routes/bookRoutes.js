@@ -8,6 +8,9 @@ const router = express.Router();
 
 //creating a book
 
+router.post('/check',async (req,res)=>{
+    res.send("Books API endpoint")
+})
 router.post('/',protectedRoute,async (req,res)=>{
     try {
         const { title,caption,rating,image } = req.body;
@@ -31,6 +34,7 @@ router.post('/',protectedRoute,async (req,res)=>{
         await newBook.save();
         res.status(200).json(newBook);
 
+        res.send({message:"Book Added"});
 
     }catch(error){
         console.log("Error creating book", error);
