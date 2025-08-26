@@ -17,8 +17,6 @@ app.use(cors());
 app.use('/api/auth',authRoutes)
 app.use('/api/books',bookRoutes)
 
-
-
 app.listen(SERVER_PORT,()=>{
     connectDatabase();
     console.log('Server started on port ' + SERVER_PORT);

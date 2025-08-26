@@ -8,7 +8,7 @@ const router = express.Router();
 
 //creating a book
 
-router.post('/check',async (req,res)=>{
+router.get('/check',async (req,res)=>{
     res.send("Books API endpoint")
 })
 router.post('/',protectedRoute,async (req,res)=>{
