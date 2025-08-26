@@ -1,29 +1,29 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-
-const protectRoute = async (req,res,next)=>{
-
+export default async function protectedRoute(req, res, next) {
     try {
-        //get token
-        const token = req.headers["Authorization"].replace("Bearer ", "");
+        const authHeader = req.headers["authorization"]; // ✅ correct
+        if (!authHeader) {
+            return res.status(401).json({ message: "No token provided" });
+        }
 
-        if(!token) return res.status(403).json({message:"You are not authorized, access denied"});
+        // format: "Bearer <token>"
+        const token = authHeader.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ message: "Invalid token format" });
+        }
 
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        //find user
-        const user = await User.findById(decodedToken.userId).select("-password");
+        req.user = await User.findById(decoded.id).select("-password");
+        if (!req.user) {
+            return res.status(401).json({ message: "User not found" });
+        }
 
-        if(!user) return res.status(401).json({message:"Token not found"});
-
-        req.user = user;
         next();
-    }catch(errors){
-        console.error("Authentication error:", errors.message);
-        res.status(401).json({ message: "Token is not valid" });
+    } catch (error) {
+        console.error("Auth error:", error);
+        res.status(401).json({ message: "Authentication failed" });
     }
-
 }
-
-export default protectRoute;
