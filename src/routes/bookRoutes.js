@@ -13,27 +13,31 @@ router.post("/", protectRoute, async (req, res) => {
             return res.status(400).json({ message: "Please provide all fields" });
         }
 
-        // upload the image to cloudinary
-        const uploadResponse = await cloudinary.uploader.upload(image);
-        const imageUrl = uploadResponse.secure_url;
+        // upload image to cloudinary
+        const uploadResponse = await cloudinary.uploader.upload(image).catch(err => {
+            console.error("Cloudinary error:", err);
+            throw new Error("Cloudinary upload failed");
+        });
 
-        // save to the database
         const newBook = new Book({
             title,
             caption,
             rating,
-            image: imageUrl,
+            image: uploadResponse.secure_url,
             user: req.user._id,
         });
 
         await newBook.save();
-
         res.status(201).json(newBook);
+
     } catch (error) {
-        console.log("Error creating book", error);
-        res.status(500).json({ message: error.message });
+        console.error("Error creating book:", error);
+        res.status(500).json({
+            message: error.message || "Internal server error"
+        });
     }
 });
+
 
 // pagination => infinite loading
 router.get("/", protectRoute, async (req, res) => {
