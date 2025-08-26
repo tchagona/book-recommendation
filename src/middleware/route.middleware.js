@@ -6,7 +6,7 @@ const protectRoute = async (req,res,next)=>{
 
     try {
         //get token
-        const token = req.headers("Authorization").replace("Bearer ", "");
+        const token = req.headers["Authorization"].replace("Bearer ", "");
 
         if(!token) return res.status(403).json({message:"You are not authorized, access denied"});
 

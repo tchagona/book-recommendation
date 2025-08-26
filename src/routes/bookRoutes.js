@@ -12,7 +12,6 @@ router.post("/", protectRoute, async (req, res) => {
         if (!image || !title || !caption || !rating) {
             return res.status(400).json({ message: "Please provide all fields" });
         }
-
         // upload image to cloudinary
         const uploadResponse = await cloudinary.uploader.upload(image).catch(err => {
             console.error("Cloudinary error:", err);
